@@ -7,7 +7,7 @@ import {
   type NemesisCardTier,
   NemesisCardTiers,
   type PlayerCard,
-  PlayerCardType
+  PlayerCardType,
 } from '@/models'
 
 export class GameService {
@@ -19,7 +19,7 @@ export class GameService {
       effectText: '',
       flavorText: '',
       nemesis: NEMESIS_BASIC_LABEL,
-      ...options
+      ...options,
     }
   }
 
@@ -31,7 +31,7 @@ export class GameService {
       effectText: '',
       flavorText: '',
       isRandomiser: false,
-      ...options
+      ...options,
     }
   }
 
@@ -41,7 +41,7 @@ export class GameService {
     const tiers: NemesisCardTier[] = [
       NemesisCardTiers.ONE,
       NemesisCardTiers.TWO,
-      NemesisCardTiers.THREE
+      NemesisCardTiers.THREE,
     ]
     return deckStructure.flatMap((nbCards, index) =>
       Array(nbCards)
@@ -49,9 +49,9 @@ export class GameService {
         .map(() =>
           this.createNemesisCard({
             tier: tiers[index],
-            type: NemesisCardType.Attack
-          })
-        )
+            type: NemesisCardType.Attack,
+          }),
+        ),
     )
   }
 }

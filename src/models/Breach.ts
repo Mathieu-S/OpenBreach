@@ -6,7 +6,7 @@ export const BreachNumbers = {
   // Note: I have no idea whats the max but documentation says
   // that 'not all players have the same amount of available breaches'.
   V: 5,
-  VI: 6
+  VI: 6,
 } as const
 
 export type BreachNumber = (typeof BreachNumbers)[keyof typeof BreachNumbers]
@@ -18,7 +18,7 @@ export type BreachSideEffectTexts = [
   TopEffectText: string,
   LeftEffectText: string,
   BottomEffectText: string,
-  RightEffectText: string
+  RightEffectText: string,
 ]
 
 export enum BreachPosition {
@@ -33,7 +33,7 @@ export enum BreachPosition {
    */
   BOTTOM,
   /** 270% rotation */
-  RIGHT
+  RIGHT,
 }
 
 export interface Breach {

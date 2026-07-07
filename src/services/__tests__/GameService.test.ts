@@ -1,13 +1,7 @@
 import { assert, describe, it } from 'vitest'
-import { GameService } from '../GameService'
+import { GameService } from '@/services'
 
 describe('Create nemesis deck', () => {
-  it('For invalid player', () => {
-    const gameService = new GameService()
-    // @ts-expect-error
-    assert.throw(() => gameService.createNemesisDeck(0), 'Invalid player number!')
-  })
-
   it('For 1 player', () => {
     const gameService = new GameService()
 

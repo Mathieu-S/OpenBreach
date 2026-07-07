@@ -1,20 +1,20 @@
 export enum PlayerCardType {
   Gem,
   Relic,
-  Spell
+  Spell,
 }
 
 export enum NemesisCardType {
   Attack,
   Minion,
-  Power
+  Power,
 }
 
 export const NemesisCardTiers = {
   ZERO: 0,
   ONE: 1,
   TWO: 2,
-  THREE: 3
+  THREE: 3,
 } as const
 
 export const NEMESIS_BASIC_LABEL = 'Basic'

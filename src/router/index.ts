@@ -7,24 +7,24 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
     },
     {
       path: '/game',
       name: 'game',
-      component: () => import('@/views/GameView.vue')
+      component: () => import('@/views/GameView.vue'),
     },
     {
       path: '/config',
       name: 'configuration',
-      component: () => import('@/views/ConfigurationView.vue')
+      component: () => import('@/views/ConfigurationView.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('@/views/AboutView.vue')
-    }
-  ]
+      component: () => import('@/views/AboutView.vue'),
+    },
+  ],
 })
 
 export default router
