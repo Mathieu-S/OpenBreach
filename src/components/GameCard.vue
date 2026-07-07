@@ -1,82 +1,51 @@
 <script setup lang="ts">
-import { type PlayerCard, type NemesisCard, NemesisCardType, PlayerCardType } from '@/models'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
-const props = defineProps<{
-  cardData: PlayerCard | NemesisCard
-  typeCard: string
+const { type } = defineProps<{
+  type: 'crystal' | 'spark' | 'rageborne' | 'power' | 'minion'
 }>()
 
-const cardStyle = computed(() => {
-  if (props.typeCard === 'nemesis') {
-    switch (props.cardData.type) {
-      case NemesisCardType.Attack:
-        return 'card nemesis attack'
-      case NemesisCardType.Minion:
-        return 'card nemesis minion'
-      case NemesisCardType.Power:
-        return 'card nemesis power'
-      default:
-        return 'card'
-    }
-  } else {
-    switch (props.cardData.type) {
-      case PlayerCardType.Gem:
-        return 'card player gem'
-      case PlayerCardType.Relic:
-        return 'card player relic'
-      case PlayerCardType.Spell:
-        return 'card player spell'
-      default:
-        return 'card'
-    }
-  }
-})
+const selected = ref(false)
+const isSelectable = computed(() => type !== 'minion' && type !== 'rageborne')
+
+function toggleSelected() {
+  if (!isSelectable.value) return
+  selected.value = !selected.value
+}
 </script>
 
 <template>
-  <article :class="cardStyle">
-    <div>{{ props.cardData.name }}</div>
-    <p>{{ props.cardData.effectText }}</p>
+  <article class="card" :class="{ selectable: isSelectable, selected }" @click="toggleSelected">
+    <img :src="`img/${type}.jpg`" alt="" />
+    <p v-if="type === 'rageborne'">Health: 70/70</p>
+    <p v-if="type === 'minion'">Health: 5/5</p>
+    <p v-if="type === 'power'">Triggers in: 2 turn(s)</p>
   </article>
 </template>
 
 <style scoped>
 .card {
-  border: 1px white solid;
-  height: 20rem;
-  width: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.25rem;
+  transition: margin-bottom 0.2s;
 }
 
-.nemesis:hover {
-  box-shadow: 0px 0px 10px 1px red;
+.card.selectable:hover {
+  cursor: pointer;
+  margin-bottom: 1rem;
 }
 
-.player:hover {
-  box-shadow: 0px 0px 10px 1px white;
+.card.selected {
+  border: 1px solid white;
+  border-radius: 0.5rem;
 }
 
-.nemesis.attack {
-  border-color: rgb(195, 0, 255);
-}
-
-.nemesis.minion {
-  border-color: rgb(0, 140, 255);
-}
-
-.nemesis.power {
-  border-color: rgb(219, 197, 0);
-}
-
-.player.gem {
-  border-color: rgb(195, 0, 255);
-}
-
-.player.relic {
-  border-color: rgb(0, 140, 255);
-}
-
-.player.spell {
-  border-color: rgb(219, 197, 0);
+img {
+  height: 17.5rem;
+  width: 12.5rem;
+  border-radius: 0.5rem;
 }
 </style>
