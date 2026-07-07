@@ -1,52 +1,40 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-
-import { GameService } from '@/services'
-import { NemesisCardType, PlayerCardType, type NemesisCard, type PlayerCard } from '@/models'
-
 import GameCard from '@/components/GameCard.vue'
-
-const cardAtk = ref<NemesisCard>()
-const cardMinion = ref<NemesisCard>()
-const cardPower = ref<NemesisCard>()
-
-const cardGem = ref<PlayerCard>()
-const cardRelic = ref<PlayerCard>()
-const cardSpell = ref<PlayerCard>()
-
-onMounted(() => {
-  const gameService = new GameService()
-
-  cardAtk.value = gameService.createNemesisCard({})
-  cardMinion.value = gameService.createNemesisCard({})
-  cardPower.value = gameService.createNemesisCard({})
-  cardAtk.value.type = NemesisCardType.Attack
-  cardMinion.value.type = NemesisCardType.Minion
-  cardPower.value.type = NemesisCardType.Power
-
-  cardGem.value = gameService.createPlayerCard({})
-  cardRelic.value = gameService.createPlayerCard({})
-  cardSpell.value = gameService.createPlayerCard({})
-  cardGem.value.type = PlayerCardType.Gem
-  cardRelic.value.type = PlayerCardType.Relic
-  cardSpell.value.type = PlayerCardType.Spell
-})
 </script>
 
 <template>
   <main class="game-view">
     <section class="nemesis-area">
-      <GameCard v-if="cardAtk" :cardData="cardAtk" typeCard="nemesis" />
-      <GameCard v-if="cardMinion" :cardData="cardMinion" typeCard="nemesis" />
-      <GameCard v-if="cardPower" :cardData="cardPower" typeCard="nemesis" />
+      <GameCard type="rageborne" />
+      <div class="nemesis-cards">
+        <GameCard type="minion" />
+        <GameCard type="power" />
+      </div>
     </section>
-    <section class="action-area">
-      <button>End Turn</button>
+    <section class="control-area">
+      <ul class="information-area bulletless-list">
+        <li>Player: SPG</li>
+        <li>Player Number: 1</li>
+        <li>Health: 10</li>
+        <li>Charge: 2/5</li>
+        <li>Gravehold: 30/30</li>
+      </ul>
+      <menu class="actions-area bulletless-list">
+        <li><button disabled>Use ability</button></li>
+        <li><button>Show supply</button></li>
+        <li><button>Show discard</button></li>
+        <li><button>End Turn</button></li>
+      </menu>
+      <ol class="breach-area">
+        <li>open</li>
+        <li>closed</li>
+        <li>closed</li>
+        <li>closed</li>
+      </ol>
     </section>
     <section class="player-area">
-      <GameCard v-if="cardGem" :cardData="cardGem" typeCard="player" />
-      <GameCard v-if="cardRelic" :cardData="cardRelic" typeCard="player" />
-      <GameCard v-if="cardSpell" :cardData="cardSpell" typeCard="player" />
+      <GameCard type="spark" v-for="(i, index) in 2" :key="index" />
+      <GameCard type="crystal" v-for="(i, index) in 3" :key="index" />
     </section>
   </main>
 </template>
@@ -55,25 +43,59 @@ onMounted(() => {
 .game-view {
   height: 100%;
   display: grid;
-  grid-template-rows: repeat(9, 1fr);
+  grid-template-rows: 1fr auto 1fr;
 }
 
 section {
+  padding: 1rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
 }
 
 .nemesis-area {
-  grid-row: 1/5;
+  align-items: center;
+  gap: 1rem;
 }
 
-.action-area {
-  grid-row: 5;
+.nemesis-cards {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nemesis-cards:before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 100%;
+  background-color: var(--color-text);
+}
+
+.control-area {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-area > ul,
+.control-area > menu,
+.control-area > ol {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.breach-area {
+  padding: 0;
+  list-style: upper-roman;
+}
+
+.breach-area li {
+  margin: 0 1rem;
 }
 
 .player-area {
-  grid-row: 6/10;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 </style>
