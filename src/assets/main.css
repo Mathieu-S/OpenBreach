@@ -1,20 +1,10 @@
-:root {
-  background-color: rgba(17, 17, 17);
-  color: white;
-  font-family: Arial, sans-serif;
-}
+@import './base.css';
 
-html,
-body,
 #app {
-  height: 100%;
+  height: 100dvh;
 }
 
-body {
-  margin: 0;
-}
-
-header,
-main {
-  text-align: center;
+.bulletless-list {
+  list-style: none;
+  padding: 0;
 }
