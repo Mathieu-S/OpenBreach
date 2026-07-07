@@ -8,7 +8,7 @@ import { RouterLink } from 'vue-router'
     <p>An open source implementation of Aeon's End</p>
   </header>
 
-  <main>
+  <main class="home-view">
     <nav>
       <RouterLink to="/game">Star a new game</RouterLink>
       <RouterLink to="/config">Configuration</RouterLink>

@@ -34,7 +34,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="game">
+  <main class="game-view">
     <section class="nemesis-area">
       <GameCard v-if="cardAtk" :cardData="cardAtk" typeCard="nemesis" />
       <GameCard v-if="cardMinion" :cardData="cardMinion" typeCard="nemesis" />
@@ -51,8 +51,8 @@ onMounted(() => {
   </main>
 </template>
 
-<style lang="css" scoped>
-.game {
+<style scoped>
+.game-view {
   height: 100%;
   display: grid;
   grid-template-rows: repeat(9, 1fr);
