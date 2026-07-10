@@ -59,8 +59,8 @@ function closeModal() {
         <GameCard
           id="power"
           :type="CardType.Power"
-          animatable
-          selectable
+          :animatable="selectedType === null || selectedType === CardType.Power"
+          :selectable="selectedType === null || selectedType === CardType.Power"
           :selected="selectedCard.includes('power')"
           @toggle="toggleCard"
         />
@@ -105,8 +105,8 @@ function closeModal() {
         :key="`spark-${index}`"
         :id="`spark-${index}`"
         :type="CardType.Spell"
-        animatable
-        selectable
+        :animatable="selectedType === null || selectedType === CardType.Spell"
+        :selectable="selectedType === null || selectedType === CardType.Spell"
         :selected="selectedCard.includes(`spark-${index}`)"
         @toggle="toggleCard"
       />
@@ -115,8 +115,8 @@ function closeModal() {
         :key="`crystal-${index}`"
         :id="`crystal-${index}`"
         :type="CardType.Gem"
-        animatable
-        selectable
+        :animatable="selectedType === null || selectedType === CardType.Gem"
+        :selectable="selectedType === null || selectedType === CardType.Gem"
         :selected="selectedCard.includes(`crystal-${index}`)"
         @toggle="toggleCard"
       />

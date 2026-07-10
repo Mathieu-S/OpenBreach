@@ -56,10 +56,15 @@ function toggleSelected() {
   gap: 1rem;
   padding: 0.25rem;
   transition: margin-bottom 0.2s;
+  border-radius: 0.5rem;
 }
 
-.card.selectable:hover {
-  cursor: pointer;
+.card.selectable {
+  box-shadow: 0 0 0.5rem white;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .card.animatable:hover {
