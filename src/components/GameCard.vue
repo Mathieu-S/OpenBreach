@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
-const { type } = defineProps<{
+const { type, selectable, animatable } = defineProps<{
   type: 'crystal' | 'spark' | 'rageborne' | 'power' | 'minion'
+  selectable?: boolean
+  animatable?: boolean
 }>()
 
 const selected = ref(false)
-const isSelectable = computed(() => type !== 'minion' && type !== 'rageborne')
 
 function toggleSelected() {
-  if (!isSelectable.value) return
+  if (!selectable) return
   selected.value = !selected.value
 }
 </script>
 
 <template>
-  <article class="card" :class="{ selectable: isSelectable, selected }" @click="toggleSelected">
+  <article class="card" :class="{ selectable, animatable, selected }" @click="toggleSelected">
     <img :src="`img/${type}.jpg`" alt="" />
     <p v-if="type === 'rageborne'">Health: 70/70</p>
     <p v-if="type === 'minion'">Health: 5/5</p>
@@ -35,6 +36,9 @@ function toggleSelected() {
 
 .card.selectable:hover {
   cursor: pointer;
+}
+
+.card.animatable:hover {
   margin-bottom: 1rem;
 }
 

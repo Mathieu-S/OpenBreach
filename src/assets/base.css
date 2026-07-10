@@ -10,7 +10,7 @@
 /*  }*/
 /*}*/
 
-*,
+*:not(dialog),
 *::before,
 *::after {
   margin: 0;

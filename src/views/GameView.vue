@@ -1,5 +1,30 @@
 <script setup lang="ts">
+import { ref, useTemplateRef } from 'vue'
+import type { ComponentExposed } from 'vue-component-type-helpers'
+
 import GameCard from '@/components/GameCard.vue'
+import ModalWrapper from '@/components/ModalWrapper.vue'
+import DiscardList from '@/components/DiscardList.vue'
+import SupplyShop from '@/components/SupplyShop.vue'
+
+type modalType = 'supply' | 'discard'
+const modal = useTemplateRef<ComponentExposed<typeof ModalWrapper>>('modal')
+const isSupplyOpen = ref(false)
+const isDiscardOpen = ref(false)
+
+function showModal(type: modalType) {
+  if (type === 'supply') {
+    isSupplyOpen.value = true
+  } else if (type === 'discard') {
+    isDiscardOpen.value = true
+  }
+  modal.value?.open()
+}
+
+function closeModal() {
+  isSupplyOpen.value = false
+  isDiscardOpen.value = false
+}
 </script>
 
 <template>
@@ -8,7 +33,7 @@ import GameCard from '@/components/GameCard.vue'
       <GameCard type="rageborne" />
       <div class="nemesis-cards">
         <GameCard type="minion" />
-        <GameCard type="power" />
+        <GameCard type="power" selectable animatable />
       </div>
     </section>
     <section class="control-area">
@@ -21,8 +46,8 @@ import GameCard from '@/components/GameCard.vue'
       </ul>
       <menu class="actions-area bulletless-list">
         <li><button disabled>Use ability</button></li>
-        <li><button>Show supply</button></li>
-        <li><button>Show discard</button></li>
+        <li><button @click="showModal('supply')">Show supply</button></li>
+        <li><button @click="showModal('discard')">Show discard</button></li>
         <li><button>End Turn</button></li>
       </menu>
       <ol class="breach-area">
@@ -33,9 +58,13 @@ import GameCard from '@/components/GameCard.vue'
       </ol>
     </section>
     <section class="player-area">
-      <GameCard type="spark" v-for="(i, index) in 2" :key="index" />
-      <GameCard type="crystal" v-for="(i, index) in 3" :key="index" />
+      <GameCard type="spark" selectable animatable v-for="(i, index) in 2" :key="index" />
+      <GameCard type="crystal" selectable animatable v-for="(i, index) in 3" :key="index" />
     </section>
+    <ModalWrapper ref="modal" @closed="closeModal">
+      <DiscardList v-if="isDiscardOpen" />
+      <SupplyShop v-if="isSupplyOpen" />
+    </ModalWrapper>
   </main>
 </template>
 
