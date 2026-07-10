@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
+import { CardType } from '@/types/card.ts'
 
 import GameCard from '@/components/GameCard.vue'
 import ModalWrapper from '@/components/ModalWrapper.vue'
@@ -11,6 +12,28 @@ type modalType = 'supply' | 'discard'
 const modal = useTemplateRef<ComponentExposed<typeof ModalWrapper>>('modal')
 const isSupplyOpen = ref(false)
 const isDiscardOpen = ref(false)
+
+const selectedCard = ref<string[]>([])
+const selectedType = ref<CardType | null>(null)
+
+function toggleCard(id: string, type: CardType) {
+  const index = selectedCard.value.indexOf(id)
+
+  if (index !== -1) {
+    // Deselect the card.
+    selectedCard.value.splice(index, 1)
+    if (selectedCard.value.length === 0) {
+      selectedType.value = null
+    }
+    return
+  }
+
+  // Only allow selecting cards that share the same type.
+  if (selectedType.value !== null && selectedType.value !== type) return
+
+  selectedType.value = type
+  selectedCard.value.push(id)
+}
 
 function showModal(type: modalType) {
   if (type === 'supply') {
@@ -30,10 +53,17 @@ function closeModal() {
 <template>
   <main class="game-view">
     <section class="nemesis-area">
-      <GameCard type="rageborne" />
+      <GameCard id="nemesis" :type="CardType.Randomizer" />
       <div class="nemesis-cards">
-        <GameCard type="minion" />
-        <GameCard type="power" selectable animatable />
+        <GameCard id="minion" :type="CardType.Minion" />
+        <GameCard
+          id="power"
+          :type="CardType.Power"
+          animatable
+          selectable
+          :selected="selectedCard.includes('power')"
+          @toggle="toggleCard"
+        />
       </div>
     </section>
     <section class="control-area">
@@ -44,7 +74,19 @@ function closeModal() {
         <li>Charge: 2/5</li>
         <li>Gravehold: 30/30</li>
       </ul>
-      <menu class="actions-area bulletless-list">
+      <menu v-if="selectedType === CardType.Gem" class="actions-area bulletless-list">
+        <li><button>Consume</button></li>
+      </menu>
+      <menu v-else-if="selectedType === CardType.Spell" class="actions-area bulletless-list">
+        <li><button>Prepare</button></li>
+      </menu>
+      <menu v-else-if="selectedType === CardType.Relic" class="actions-area bulletless-list">
+        <li><button>Use</button></li>
+      </menu>
+      <menu v-else-if="selectedType === CardType.Power" class="actions-area bulletless-list">
+        <li><button>Resolve</button></li>
+      </menu>
+      <menu v-else class="actions-area bulletless-list">
         <li><button disabled>Use ability</button></li>
         <li><button @click="showModal('supply')">Show supply</button></li>
         <li><button @click="showModal('discard')">Show discard</button></li>
@@ -58,8 +100,26 @@ function closeModal() {
       </ol>
     </section>
     <section class="player-area">
-      <GameCard type="spark" selectable animatable v-for="(i, index) in 2" :key="index" />
-      <GameCard type="crystal" selectable animatable v-for="(i, index) in 3" :key="index" />
+      <GameCard
+        v-for="(i, index) in 2"
+        :key="`spark-${index}`"
+        :id="`spark-${index}`"
+        :type="CardType.Spell"
+        animatable
+        selectable
+        :selected="selectedCard.includes(`spark-${index}`)"
+        @toggle="toggleCard"
+      />
+      <GameCard
+        v-for="(i, index) in 3"
+        :key="`crystal-${index}`"
+        :id="`crystal-${index}`"
+        :type="CardType.Gem"
+        animatable
+        selectable
+        :selected="selectedCard.includes(`crystal-${index}`)"
+        @toggle="toggleCard"
+      />
     </section>
     <ModalWrapper ref="modal" @closed="closeModal">
       <DiscardList v-if="isDiscardOpen" />

@@ -1,26 +1,50 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { CardType } from '@/types/card'
+import { computed } from 'vue'
 
-const { type, selectable, animatable } = defineProps<{
-  type: 'crystal' | 'spark' | 'rageborne' | 'power' | 'minion'
-  selectable?: boolean
+const { id, type, selectable, animatable, selected } = defineProps<{
+  id: string
+  type: CardType
   animatable?: boolean
+  selectable?: boolean
+  selected?: boolean
 }>()
 
-const selected = ref(false)
+const emit = defineEmits<{
+  toggle: [id: string, type: CardType]
+}>()
+
+const imgUrl = computed(() => {
+  switch (type) {
+    case CardType.Randomizer:
+      return 'img/rageborne.jpg'
+    case CardType.Gem:
+      return 'img/crystal.jpg'
+    case CardType.Minion:
+      return 'img/minion.jpg'
+    case CardType.Relic:
+      return 'img/relic.jpg'
+    case CardType.Spell:
+      return 'img/spark.jpg'
+    case CardType.Power:
+      return 'img/power.jpg'
+    default:
+      return 'img/crystal.jpg'
+  }
+})
 
 function toggleSelected() {
   if (!selectable) return
-  selected.value = !selected.value
+  emit('toggle', id, type)
 }
 </script>
 
 <template>
   <article class="card" :class="{ selectable, animatable, selected }" @click="toggleSelected">
-    <img :src="`img/${type}.jpg`" alt="" />
-    <p v-if="type === 'rageborne'">Health: 70/70</p>
-    <p v-if="type === 'minion'">Health: 5/5</p>
-    <p v-if="type === 'power'">Triggers in: 2 turn(s)</p>
+    <img :src="imgUrl" alt="" />
+    <p v-if="type === CardType.Randomizer">Health: 70/70</p>
+    <p v-if="type === CardType.Minion">Health: 5/5</p>
+    <p v-if="type === CardType.Power">Triggers in: 2 turn(s)</p>
   </article>
 </template>
 
