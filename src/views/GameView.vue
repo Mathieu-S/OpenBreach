@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { ref, reactive, useTemplateRef } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 import { CardType } from '@/types/card.ts'
 
@@ -12,17 +12,16 @@ type modalType = 'supply' | 'discard'
 const modal = useTemplateRef<ComponentExposed<typeof ModalWrapper>>('modal')
 const isSupplyOpen = ref(false)
 const isDiscardOpen = ref(false)
-
-const selectedCard = ref<string[]>([])
 const selectedType = ref<CardType | null>(null)
+const selectedCards = reactive<string[]>([])
 
 function toggleCard(id: string, type: CardType) {
-  const index = selectedCard.value.indexOf(id)
+  const index = selectedCards.indexOf(id)
 
   if (index !== -1) {
     // Deselect the card.
-    selectedCard.value.splice(index, 1)
-    if (selectedCard.value.length === 0) {
+    selectedCards.splice(index, 1)
+    if (selectedCards.length === 0) {
       selectedType.value = null
     }
     return
@@ -32,7 +31,7 @@ function toggleCard(id: string, type: CardType) {
   if (selectedType.value !== null && selectedType.value !== type) return
 
   selectedType.value = type
-  selectedCard.value.push(id)
+  selectedCards.push(id)
 }
 
 function showModal(type: modalType) {
@@ -61,7 +60,7 @@ function closeModal() {
           :type="CardType.Power"
           :animatable="selectedType === null || selectedType === CardType.Power"
           :selectable="selectedType === null || selectedType === CardType.Power"
-          :selected="selectedCard.includes('power')"
+          :selected="selectedCards.includes('power')"
           @toggle="toggleCard"
         />
       </div>
@@ -101,23 +100,23 @@ function closeModal() {
     </section>
     <section class="player-area">
       <GameCard
-        v-for="(i, index) in 2"
+        v-for="index in 2"
         :key="`spark-${index}`"
         :id="`spark-${index}`"
         :type="CardType.Spell"
         :animatable="selectedType === null || selectedType === CardType.Spell"
         :selectable="selectedType === null || selectedType === CardType.Spell"
-        :selected="selectedCard.includes(`spark-${index}`)"
+        :selected="selectedCards.includes(`spark-${index}`)"
         @toggle="toggleCard"
       />
       <GameCard
-        v-for="(i, index) in 3"
+        v-for="index in 3"
         :key="`crystal-${index}`"
         :id="`crystal-${index}`"
         :type="CardType.Gem"
         :animatable="selectedType === null || selectedType === CardType.Gem"
         :selectable="selectedType === null || selectedType === CardType.Gem"
-        :selected="selectedCard.includes(`crystal-${index}`)"
+        :selected="selectedCards.includes(`crystal-${index}`)"
         @toggle="toggleCard"
       />
     </section>
