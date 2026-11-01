@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, useTemplateRef } from 'vue'
+import { ref, reactive, useTemplateRef, onMounted } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
-import { CardType } from '@/types/card.ts'
+import { CardStack, CardType } from '@/types/card.ts'
+import { usePlayerStore } from '@/stores/player.ts'
 
 import GameCard from '@/components/GameCard.vue'
 import ModalWrapper from '@/components/ModalWrapper.vue'
@@ -9,11 +10,36 @@ import DiscardList from '@/components/DiscardList.vue'
 import SupplyShop from '@/components/SupplyShop.vue'
 
 type modalType = 'supply' | 'discard'
+const playerStore = usePlayerStore()
 const modal = useTemplateRef<ComponentExposed<typeof ModalWrapper>>('modal')
 const isSupplyOpen = ref(false)
 const isDiscardOpen = ref(false)
 const selectedType = ref<CardType | null>(null)
 const selectedCards = reactive<string[]>([])
+
+//used as debug to setup the first hand
+onMounted(() => {
+  playerStore.addCard(
+    { id: self.crypto.randomUUID(), name: 'Spark', type: CardType.Spell },
+    CardStack.Hand,
+  )
+  playerStore.addCard(
+    { id: self.crypto.randomUUID(), name: 'Spark', type: CardType.Spell },
+    CardStack.Hand,
+  )
+  playerStore.addCard(
+    { id: self.crypto.randomUUID(), name: 'Crystal', type: CardType.Gem },
+    CardStack.Hand,
+  )
+  playerStore.addCard(
+    { id: self.crypto.randomUUID(), name: 'Crystal', type: CardType.Gem },
+    CardStack.Hand,
+  )
+  playerStore.addCard(
+    { id: self.crypto.randomUUID(), name: 'Crystal', type: CardType.Gem },
+    CardStack.Hand,
+  )
+})
 
 function toggleCard(id: string, type: CardType) {
   const index = selectedCards.indexOf(id)
@@ -32,6 +58,15 @@ function toggleCard(id: string, type: CardType) {
 
   selectedType.value = type
   selectedCards.push(id)
+}
+
+function consumeGem() {
+  for (const card of selectedCards) {
+    playerStore.discardCard(card)
+    playerStore.addAether(1)
+  }
+  selectedCards.length = 0
+  selectedType.value = null
 }
 
 function showModal(type: modalType) {
@@ -69,12 +104,13 @@ function closeModal() {
       <ul class="information-area bulletless-list">
         <li>Player: SPG</li>
         <li>Player Number: 1</li>
-        <li>Health: 10</li>
-        <li>Charge: 2/5</li>
+        <li>Health: {{ playerStore.health }}</li>
+        <li>Charge: {{ playerStore.charge }}/5</li>
+        <li>Aether: {{ playerStore.aether }}</li>
         <li>Gravehold: 30/30</li>
       </ul>
       <menu v-if="selectedType === CardType.Gem" class="actions-area bulletless-list">
-        <li><button>Consume</button></li>
+        <li><button @click="consumeGem">Consume</button></li>
       </menu>
       <menu v-else-if="selectedType === CardType.Spell" class="actions-area bulletless-list">
         <li><button>Prepare</button></li>
@@ -100,23 +136,13 @@ function closeModal() {
     </section>
     <section class="player-area">
       <GameCard
-        v-for="index in 2"
-        :key="`spark-${index}`"
-        :id="`spark-${index}`"
-        :type="CardType.Spell"
-        :animatable="selectedType === null || selectedType === CardType.Spell"
-        :selectable="selectedType === null || selectedType === CardType.Spell"
-        :selected="selectedCards.includes(`spark-${index}`)"
-        @toggle="toggleCard"
-      />
-      <GameCard
-        v-for="index in 3"
-        :key="`crystal-${index}`"
-        :id="`crystal-${index}`"
-        :type="CardType.Gem"
-        :animatable="selectedType === null || selectedType === CardType.Gem"
-        :selectable="selectedType === null || selectedType === CardType.Gem"
-        :selected="selectedCards.includes(`crystal-${index}`)"
+        v-for="card in playerStore.cardsInHand"
+        :key="card.id"
+        :id="card.id"
+        :type="card.type"
+        :animatable="selectedType === null || selectedType === card.type"
+        :selectable="selectedType === null || selectedType === card.type"
+        :selected="selectedCards.includes(card.id)"
         @toggle="toggleCard"
       />
     </section>

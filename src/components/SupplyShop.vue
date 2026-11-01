@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CardType } from '@/types/card'
 import GameCard from '@/components/GameCard.vue'
 </script>
 
@@ -6,7 +7,13 @@ import GameCard from '@/components/GameCard.vue'
   <div class="supply-shop">
     <p>Supply Shop</p>
     <div class="cards">
-      <GameCard selectable type="spark" v-for="(i, index) in 9" :key="index" />
+      <GameCard
+        selectable
+        :id="`spark-${index}`"
+        :type="CardType.Gem"
+        v-for="(i, index) in 9"
+        :key="index"
+      />
     </div>
   </div>
 </template>

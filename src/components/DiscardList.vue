@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CardType } from '@/types/card'
 import GameCard from '@/components/GameCard.vue'
 </script>
 
@@ -6,7 +7,13 @@ import GameCard from '@/components/GameCard.vue'
   <div class="discard-list">
     <p>Cards currently in the discard pile:</p>
     <div class="cards">
-      <GameCard type="crystal" unselectable v-for="(i, index) in 7" :key="index" />
+      <GameCard
+        :id="`spark-${index}`"
+        :type="CardType.Gem"
+        unselectable
+        v-for="(i, index) in 7"
+        :key="index"
+      />
     </div>
   </div>
 </template>
